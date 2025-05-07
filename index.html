@@ -291,9 +291,14 @@ const mapboxOutdoors = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/outd
     zoomOffset: -1,
     maxZoom: 18
 });
-
+    const mapboxCustom1 = L.tileLayer('https://api.mapbox.com/styles/v1/omerosman/cm8oy6is4006101si7ll3bs4h/tiles/{z}/{x}/{y}?access_token=pk.eyJ1Ijoib21lcm9zbWFuIiwiYSI6ImUxZDBkODBlNjQxMDE2M2Y3OTQ3MWIwNTJkMjgzZTI3In0.ekCHuxRflTOO0RpQ6rQR7Q', {
+        attribution: '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        tileSize: 512,
+        zoomOffset: -1,
+        maxZoom: 18
+    });
 // Add default base layer to the map
-mapboxLight.addTo(map);
+mapboxCustom1.addTo(map);
 
 // Add layer control to the map
 const baseLayers = {
@@ -304,7 +309,8 @@ const baseLayers = {
   "CartoDB Light": cartoDBLight1,
   "OpenStreetMap": openStreetMap1,
   "Esri World Imagery": esriWorldImagery1,
-  "Stamen Toner": stamenToner1
+  "Stamen Toner": stamenToner1,
+  "Mapbox Custom": mapboxCustom1
 };
 
 L.control.layers(baseLayers).addTo(map);
