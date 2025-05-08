@@ -445,8 +445,8 @@ L.control.layers(baseLayers).addTo(map);
             destinationGeometry: { x: 'e_lon', y: 'e_lat' }
           },
           style: (feature) => {
-            const baseRadius = 6;
-            const maxRadius = 20;
+            const baseRadius = 20;
+            const maxRadius = 6;
             const volume = feature.properties.e_Volume || 0;
             
             // Different styles for origin and destination points
@@ -458,7 +458,7 @@ L.control.layers(baseLayers).addTo(map);
               radius: radius,
               weight: 1,
               color: '#fff',
-              fillColor: feature.properties.isOrigin ? '#418FDE' : 'rgb(255, 103, 31)',
+              fillColor: feature.properties.isOrigin ? '#ff671f' : '#418FDE',
               fillOpacity: feature.properties.isOrigin ? 0.8 : 0.7
             };
           },
