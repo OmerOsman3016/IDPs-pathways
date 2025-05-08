@@ -413,7 +413,9 @@ L.control.layers(baseLayers).addTo(map);
           dynamicTyping: true,
           skipEmptyLines: true,
           complete: function(results) {
-            initializeFlowmap(results.data);
+            // Process the data to ensure displacement destination equals sum of e_Volume by e_locality_id
+            const processedData = processData(results.data);
+            initializeFlowmap(processedData);
             document.getElementById('loading-overlay').style.display = 'none';
           },
           error: function(error) {
@@ -422,6 +424,43 @@ L.control.layers(baseLayers).addTo(map);
               '<div style="color: red; text-align: center;">Error loading data. Please try again later.</div>';
           }
         });
+      }
+      
+      // Process data to ensure displacement destination equals sum of e_Volume by e_locality_id
+      function processData(data) {
+        // Group data by e_locality_id and calculate total volume for each destination
+        const destinationVolumes = {};
+        
+        data.forEach(item => {
+          const localityId = item.e_locality_id;
+          const volume = parseFloat(item.e_Volume) || 0;
+          
+          if (!destinationVolumes[localityId]) {
+            destinationVolumes[localityId] = {
+              totalVolume: 0,
+              items: []
+            };
+          }
+          
+          destinationVolumes[localityId].totalVolume += volume;
+          destinationVolumes[localityId].items.push(item);
+        });
+        
+        // Update each item's e_Volume to be the total volume for its destination
+        const processedData = [];
+        
+        Object.keys(destinationVolumes).forEach(localityId => {
+          const destination = destinationVolumes[localityId];
+          const totalVolume = destination.totalVolume;
+          
+          destination.items.forEach(item => {
+            // Update the e_Volume to be the total for this destination
+            item.e_Volume = totalVolume;
+            processedData.push(item);
+          });
+        });
+        
+        return processedData;
       }
       
       // Initialize flowmap visualization
@@ -559,7 +598,7 @@ L.control.layers(baseLayers).addTo(map);
           : `<div style="min-width: 200px;">
                <h4 style="margin: 0 0 10px; color: #2a5885;">Displacement Destination</h4>
                <p><strong>Location:</strong> ${feature.properties.e_locality}</p>
-               <p><strong>Displaced Population:</strong> ${feature.properties.e_Volume ? feature.properties.e_Volume.toLocaleString() : 'N/A'}</p>
+               <p><strong>Total Displaced Population:</strong> ${feature.properties.e_Volume ? feature.properties.e_Volume.toLocaleString() : 'N/A'}</p>
                <p><strong>Main Needs:</strong> ${feature.properties.main_needs || 'Not specified'}</p>
              </div>`;
         
