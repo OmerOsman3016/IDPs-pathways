@@ -488,7 +488,7 @@ L.control.layers(baseLayers).addTo(map);
             destinationGeometry: { x: 'e_lon', y: 'e_lat' }
           },
           style: (feature) => {
-            const baseRadius = 20;
+            const baseRadius = 10;
             const maxRadius = 6;
             const volume = feature.properties.e_Volume || 0;
             
